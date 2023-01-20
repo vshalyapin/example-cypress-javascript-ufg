@@ -1,11 +1,11 @@
 /// <reference types="cypress" />
 
-// This test case spec contains everything needed to run a full visual test against the ACME bank site.
+// This test case spec contains everything needed to run a full visual test against site glavstroy.ru.
 // The file `applitools.config.js` specifies how to run this test against multiple browsers in Applitools Ultrafast Grid.
 
 // This "describe" method contains related test cases with per-test setup and cleanup.
 // In this example, there is only one test.
-describe('ACME Bank', () => {
+describe('Visual testing glavstroy', () => {
 
     // This method performs setup before each test.
     beforeEach(() => {
@@ -13,40 +13,34 @@ describe('ACME Bank', () => {
         // Open Eyes to start visual testing.
         // Each test should open its own Eyes for its own snapshots.
         cy.eyesOpen({
-            appName: 'ACME Bank',                       // The name of the app under test
+            appName: 'glavstroy',                       // The name of the app under test
             testName: Cypress.currentTest.title,        // The name of the test case
+            batchName: 'glavstroy'
         })
     })
 
-    // This test covers login for the Applitools demo site, which is a dummy banking app.
-    // The interactions use typical Cypress calls,
-    // but the verifications use one-line snapshot calls with Applitools Eyes.
+    // The interactions use typical Cypress calls, but the verifications use one-line snapshot calls with Applitools Eyes.
     // If the page ever changes, then Applitools will detect the changes and highlight them in the dashboard.
     // Traditional assertions that scrape the page for text values are not needed here.
-    it('should log into a bank account', () => {
+    it('Pages of glavstroy', () => {
 
-        // Load the login page.
-        cy.visit('https://demo.applitools.com')
-
-        // Verify the full login page loaded correctly.
+        // Load the main page.
+        cy.visit('https://glavstroy.ru/')
+        cy.get('.cookie-warning__close').click() // закрытие уведомления об использовании куки нажатием на кнопку ХОРОШО
+          
+        // Verify the full main page loaded correctly.
         cy.eyesCheckWindow({
-            tag: "Login page",
+            tag: "Main page",
             target: 'window',
             fully: true
         });
 
-        // Perform login.
-        cy.get('#username').type('andy')
-        cy.get('#password').type('i<3pandas')
-        cy.get('#log-in').click()
+        cy.get('.mb').click() // кликаем в кнопку бургер-меню в хедере
 
-        // Verify the full main page loaded correctly.
-        // This snapshot uses LAYOUT match level to avoid differences in closing time text.
         cy.eyesCheckWindow({
-            tag: "Main page",
+            tag: "Hamburger menu",
             target: 'window',
-            fully: true,
-            matchLevel: 'Layout'
+            fully: true
         });
     })
 

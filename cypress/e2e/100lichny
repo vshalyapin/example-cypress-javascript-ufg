@@ -1,0 +1,68 @@
+/// <reference types="cypress" />
+
+// This test case spec contains everything needed to run a full visual test against site 100lichny.ru.
+// The file `applitools.config.js` specifies how to run this test against multiple browsers in Applitools Ultrafast Grid.
+
+// This "describe" method contains related test cases with per-test setup and cleanup.
+describe('Visual testing 100lichny', () => {
+
+    // This method performs setup before each test.
+    beforeEach(() => {
+
+        // Open Eyes to start visual testing.
+        // Each test should open its own Eyes for its own snapshots.
+        cy.eyesOpen({
+            appName: '100lichny',                       // The name of the app under test
+            testName: Cypress.currentTest.title,        // The name of the test case
+            batchName: '100lichny'
+        })
+    })
+
+    // The interactions use typical Cypress calls, but the verifications use one-line snapshot calls with Applitools Eyes.
+    // If the page ever changes, then Applitools will detect the changes and highlight them in the dashboard.
+    // Traditional assertions that scrape the page for text values are not needed here.
+    it('Pages of 100lichny', () => {
+
+        // Load the main page.
+        cy.visit('https://100lichny.ru/')
+        cy.get('.general_cookies_popup__btn').click() // закрываем уведомления об использовании куки нажатием на кнопку ОК
+        
+        // подскролливаем всю главную страницу для загрузки "ленивых" изображений
+        cy.get('h3').eq(0).scrollIntoView()
+        cy.wait(3000)
+        cy.get('h3').eq(1).scrollIntoView()
+        cy.wait(3000)
+        cy.get('h3').eq(2).scrollIntoView()
+        cy.wait(3000)
+        cy.get('h3').eq(3).scrollIntoView()
+        cy.wait(3000)
+        cy.get('h3').eq(4).scrollIntoView()
+        cy.wait(3000)
+        cy.get('h3').eq(5).scrollIntoView()
+        cy.wait(3000)
+        cy.get('h3').eq(6).scrollIntoView()
+        cy.wait(3000)
+          
+        // Verify the full main page loaded correctly.
+        cy.eyesCheckWindow({
+            tag: "Main page",
+            target: 'window',
+            fully: true
+        });
+
+        cy.get('.hamburger-box').click() // кликаем в кнопку бургер-меню в хедере
+
+        cy.eyesCheckWindow({
+            tag: "Hamburger menu",
+            target: 'window',
+            fully: true
+        });
+    })
+
+    // This method performs cleanup after each test.
+    afterEach(() => {
+        
+        // Close Eyes to tell the server it should display the results.
+        cy.eyesClose()
+    })
+})
