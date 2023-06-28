@@ -30,7 +30,7 @@ module.exports = {
 
         // Add mobile emulation device for cross-browser testing in the Ultrafast Grid.
         // Other mobile devices are available, including iOS.
-        {deviceName: 'iPhone X', screenOrientation: 'portrait'},
+        // {deviceName: 'iPhone X', screenOrientation: 'portrait'},
         // {deviceName: 'iPad Pro', screenOrientation: 'landscape'}
     ]
 }

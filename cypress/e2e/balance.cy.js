@@ -1,11 +1,12 @@
 /// <reference types="cypress" />
+/// <reference types="@applitools/eyes-cypress" />
 
 // This test case spec contains everything needed to run a full visual test against site get-balance.ru.
 // The file `applitools.config.js` specifies how to run this test against multiple browsers in Applitools Ultrafast Grid.
 
 // This "describe" method contains related test cases with per-test setup and cleanup.
 // In this example, there is only one test.
-describe('Visual testing balance', () => {
+describe('Visual AI testing balance', () => {
     Cypress.on('uncaught:exception', (err, runnable) => {
         // returning false here prevents Cypress from failing the test
         return false
@@ -19,7 +20,8 @@ describe('Visual testing balance', () => {
         cy.eyesOpen({
             appName: 'balance',                         // The name of the app under test
             testName: Cypress.currentTest.title,        // The name of the test case
-            batchName: 'balance'
+            batchName: 'balance',
+            // browser: { width: 800, height: 600 }
         })
     })
 
@@ -32,28 +34,47 @@ describe('Visual testing balance', () => {
         cy.visit('https://get-balance.ru/')
         cy.get('.cookies-btn').click({force: true}) // закрытие уведомления об использовании куки нажатием на кнопку ок
             
-        // // Verify the full main page loaded correctly.
-        // cy.eyesCheckWindow({
-        //     tag: "Main page",
-        //     target: 'window',
-        //     fully: true
-        // });
+        // Verify the full main page loaded correctly.
+        cy.eyesCheckWindow({
+            tag: "Main page"
+        });
 
-        cy.get('.mb').click() // кликаем в кнопку бургер-меню в хедере
+        cy.get('.mb').click() // кликаем на кнопку бургер-меню в хедере
 
         cy.eyesCheckWindow({
             tag: "Hamburger menu",
-            sizeMode: 'viewport',
+            target: 'window',
+            fully: false
         });
 
-        cy.visit('https://get-balance.ru/flats/')
+        cy.get('.desctop').click() // кликаем на ссылку "магазин квартир" в хедере
 
         cy.eyesCheckWindow({
             tag: "Magazin kvartir",
-            sizeMode: 'selector',
-            selector: 'div.catalog-filter'
+            // target: 'region',
+            // selector: '.catalog-filter'
         });
-''    })
+
+        // cy.get('.catalog-block-item').first().find('a').first().invoke('removeAttr', 'target').click() // кликаем на первую карточку в списке квартир
+        cy.visit('https://get-balance.ru/flats/5311/') // переходим в карточку произвольной квартиры
+
+        cy.eyesCheckWindow({
+            tag: "Flat card"
+        });
+
+        // cy.get('a').invoke('removeAttr', 'target').click() // нажимаем на кнопку "забронировать"
+        cy.visit('https://get-balance.ru/booking/form/?flat=5311') // переходим на короткую форму бронирования произвольной квартиры
+                    
+        cy.eyesCheckWindow({
+            tag: "Short booking form"
+        });
+
+        cy.visit('https://get-balance.ru/404',{failOnStatusCode: false}) // to handle status code exception
+
+        cy.eyesCheckWindow({
+            tag: "404 paga"
+        });
+    })
 
     // This method performs cleanup after each test.
     afterEach(() => {
